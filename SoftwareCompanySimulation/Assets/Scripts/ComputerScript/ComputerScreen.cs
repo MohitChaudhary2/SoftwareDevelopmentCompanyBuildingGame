@@ -1,55 +1,67 @@
 ﻿using UnityEngine;
 using Assets.Scripts.PlayerControllers;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.ComputerScript
 {
     public class ComputerScreen: MonoBehaviour
     {
-        [SerializeField] Camera screenCam;
+        [SerializeField] LayerMask layer;
+        [SerializeField] Transform camPos;
 
-        private Vector3 initialPlayerCamPos;
+        Vector3 initialPos;
 
-        public bool beingUsed = false;
         public PlayerController playerController;
         public Camera playerCam;
+
+        public GraphicRaycaster raycaster;
+        PointerEventData pointerData;
+        EventSystem eventSystem;
+
         private void Start()
         {
-            screenCam = GetComponentInChildren<Camera>();
+            raycaster = GetComponent<GraphicRaycaster>();
+            eventSystem = GetComponent<EventSystem>();
         }
 
         private void Update()
         {
-            if (!beingUsed)
-            {
-                screenCam.enabled = false;
-            }
-            else
+            if (playerCam != null)
             {
                 UsePC();
-
                 if (Input.GetKeyDown(KeyCode.Tab))
                 {
                     ClosePC();
                 }
             }
+            
         }
 
         void UsePC()
         {
-            screenCam.enabled = true;
-            playerCam.enabled = false;
+            Quaternion rotation = camPos.rotation;
+            initialPos = playerCam.transform.localPosition;
+            playerCam.transform.position = camPos.position;
+            playerCam.transform.rotation = rotation;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
+
         }
 
         void ClosePC()
         {
-            beingUsed = false;
-            screenCam.enabled = false;
-            playerCam.enabled = true;
+            playerCam.transform.localPosition = new Vector3(0,1.73f, 0);
             playerController.disableMovement = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            playerCam = null;
+            //Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        public void OpenJobsPostal()
+        {
+            print("Displaying Job Postal");
         }
     }
 }

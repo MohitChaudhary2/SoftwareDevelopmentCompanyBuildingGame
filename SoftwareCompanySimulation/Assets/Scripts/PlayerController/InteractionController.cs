@@ -12,22 +12,25 @@ namespace Assets.Scripts.PlayerControllers
         }
         private void Update()
         {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit, 3f))
+            if (!playerController.disableMovement)
             {
-                if (hit.transform.CompareTag("Computer"))
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, transform.forward, out hit, 3f))
                 {
-                    print("Compter in reach press E to interact");
-                    if (Input.GetKeyDown(KeyCode.E))
+                    if (hit.transform.CompareTag("Computer"))
                     {
-                        ComputerScreen pcScreen = hit.transform.gameObject.GetComponent<ComputerScreen>();
-                        playerController.disableMovement = true;
-                        pcScreen.playerCam = GetComponent<Camera>();
-                        pcScreen.playerController = playerController;
-                        pcScreen.beingUsed = true;
+                        print("Compter in reach press E to interact");
+                        if (Input.GetKeyDown(KeyCode.E))
+                        {
+                            ComputerScreen pcScreen = hit.transform.gameObject.GetComponent<ComputerScreen>();
+                            playerController.disableMovement = true;
+                            pcScreen.playerCam = GetComponent<Camera>();
+                            pcScreen.playerController = playerController;
+                        }
                     }
                 }
             }
+            
         }
     }
 }
